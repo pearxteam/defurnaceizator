@@ -9,7 +9,7 @@ import net.minecraftforge.oredict.OreDictionary
 import org.apache.logging.log4j.Logger
 
 @Mod(modLanguageAdapter = "net.shadowfacts.forgelin.KotlinAdapter", name = NAME, modid = ID, version = VERSION, acceptedMinecraftVersions = ACCEPTED_MINECRAFT_VERSIONS, acceptableRemoteVersions = "*", dependencies = DEPENDENCIES)
-object PMDumper {
+object Defurnaceizator {
     lateinit var log: Logger private set
 
     @Mod.EventHandler
@@ -27,32 +27,7 @@ object PMDumper {
 
     @Mod.EventHandler
     fun postInit(event: FMLPostInitializationEvent) {
-        val toAdd = mutableMapOf<ItemStack, Pair<ItemStack, Float>>()
-        log.info(FurnaceRecipes.instance().smeltingList.toString())
-        val iter = FurnaceRecipes.instance().smeltingList.iterator()
-        for((input, output) in iter) { // for each recipe
-            val inputOres = input.getOreNames()
-            val outputOres = output.getOreNames()
-            for(inputOre in inputOres) { // for each ore name of input stack
-                if(inputOre.startsWith("ore")) {
-                    val oreName = inputOre.substring(3)
-                    if("ingot$oreName" in outputOres) {
-                        val nuggets = OreDictionary.getOres("nugget$oreName")
-                        if(!nuggets.isEmpty()) {
-                            val xp = FurnaceRecipes.instance().getSmeltingExperience(output)
-                            log.info("Removing the ${input.toString(true)} > ${output.toString(true)} (XP: $xp) furnace recipe")
-                            iter.remove()
-                            toAdd[input] = nuggets.first() to xp
-                            break
-                        }
-                    }
-                }
-            }
-        }
-        for((input, outputPair) in toAdd) {
-            val (output, xp) = outputPair
-            log.info("Adding the ${input.toString(true)} > ${output.toString(true)} (XP: $xp) furnace recipe")
-            FurnaceRecipes.instance().addSmeltingRecipe(input, output, xp)
-        }
+        replaceSmeltingOreDict("ore", "ingot", "nugget")
+        replaceSmeltingOreDict("dust", "ingot", "nugget")
     }
 }

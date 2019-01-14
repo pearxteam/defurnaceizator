@@ -28,6 +28,7 @@ object PMDumper {
     @Mod.EventHandler
     fun postInit(event: FMLPostInitializationEvent) {
         val toAdd = mutableMapOf<ItemStack, Pair<ItemStack, Float>>()
+        log.info(FurnaceRecipes.instance().smeltingList.toString())
         val iter = FurnaceRecipes.instance().smeltingList.iterator()
         for((input, output) in iter) { // for each recipe
             val inputOres = input.getOreNames()
@@ -39,10 +40,10 @@ object PMDumper {
                         val nuggets = OreDictionary.getOres("nugget$oreName")
                         if(!nuggets.isEmpty()) {
                             val xp = FurnaceRecipes.instance().getSmeltingExperience(output)
+                            log.info("Removing the ${input.toString(true)} > ${output.toString(true)} (XP: $xp) furnace recipe")
                             iter.remove()
-                            log.info("Removed the ${input.toString(true)} > ${output.toString(true)} (XP: $xp) furnace recipe")
                             toAdd[input] = nuggets.first() to xp
-                            continue
+                            break
                         }
                     }
                 }
@@ -50,7 +51,7 @@ object PMDumper {
         }
         for((input, outputPair) in toAdd) {
             val (output, xp) = outputPair
-            log.info("Added the ${input.toString(true)} > ${output.toString(true)} (XP: $xp) furnace recipe")
+            log.info("Adding the ${input.toString(true)} > ${output.toString(true)} (XP: $xp) furnace recipe")
             FurnaceRecipes.instance().addSmeltingRecipe(input, output, xp)
         }
     }

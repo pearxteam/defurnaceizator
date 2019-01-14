@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.oredict.OreDictionary
 
 fun ItemStack.getOreNames(): List<String> = arrayListOf<String>().also { lst ->
+    if(isEmpty) return@also
     val stack = if (itemDamage == OreDictionary.WILDCARD_VALUE) copy().apply { itemDamage = 0 } else this
     for (id in OreDictionary.getOreIDs(stack)) {
         lst.add(OreDictionary.getOreName(id))

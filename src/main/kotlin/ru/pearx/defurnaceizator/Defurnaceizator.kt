@@ -27,6 +27,7 @@ object Defurnaceizator {
 
     @Mod.EventHandler
     fun postInit(event: FMLPostInitializationEvent) {
+        replaceSmeltingOreDict("orePoor", "nugget", "nugget")
         replaceSmeltingOreDict("ore", "ingot", "nugget")
         replaceSmeltingOreDict("dust", "ingot", "nugget")
     }
